@@ -12,10 +12,10 @@ Projeto desenvolvido como Trabalho Web para o curso de Ciência da Computação 
 * Pesquisas e filtros avançados sobre as coleções oficiais do jogo via API.
 
 ## Tecnologias Utilizadas
-* **Front-end:** HTML5, CSS3, TypeScript e Bootstrap[cite: 1].
-* **Back-end:** Java[cite: 1].
-* **Integração de Dados:** Pokémon TCG API (TCGdex)[cite: 1].
-* **Gestão e Versionamento:** GitHub e Trello[cite: 1].
+* **Front-end:** HTML5, CSS3, TypeScript e Bootstrap.
+* **Back-end:** Java.
+* **Integração de Dados:** Pokémon TCG API (TCGdex).
+* **Gestão e Versionamento:** GitHub e Trello.
 
 ## Equipe de Desenvolvimento
 * Diogo Cardoso Arantes
