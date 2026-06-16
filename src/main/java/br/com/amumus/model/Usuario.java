@@ -1,6 +1,7 @@
 package br.com.amumus.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Usuario {
 
@@ -9,6 +10,8 @@ public class Usuario {
     private String email;
     private String senha;
     private Date dataCadastro;
+
+    private List<CartaColecao> colecao;
 
     public Usuario() {
     }
@@ -59,5 +62,13 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public List<CartaColecao> getColecao() {
+        return colecao;
+    }
+
+    public void setColecao(List<CartaColecao> colecao) {
+        this.colecao = colecao;
     }
 }
