@@ -2,6 +2,8 @@ package br.com.amumus.model;
 
 import br.com.amumus.model.ENUMS.CondicaoEnum;
 
+import java.util.Date;
+
 public class CartaColecao {
 
     private Long id;
@@ -13,16 +15,19 @@ public class CartaColecao {
     private boolean isFoil;
     private CondicaoEnum condicao;
     private Binder binder;
+    private Date dataAdcionada;
+    private boolean isFavorita;
 
     public CartaColecao() {
     }
 
-    public CartaColecao(Usuario dono, Carta cartaBase, int quantidade, boolean isFoil, CondicaoEnum condicao) {
+    public CartaColecao(Usuario dono, Carta cartaBase, int quantidade, boolean isFoil, CondicaoEnum condicao, Date dataAdcionada) {
         this.dono = dono;
         this.cartaBase = cartaBase;
         this.quantidade = quantidade;
         this.isFoil = isFoil;
         this.condicao = condicao;
+        this.dataAdcionada = dataAdcionada;
     }
 
     public Long getId() {
@@ -79,5 +84,21 @@ public class CartaColecao {
 
     public void setBinder(Binder binder) {
         this.binder = binder;
+    }
+
+    public Date getDataAdcionada() {
+        return dataAdcionada;
+    }
+
+    public void setDataAdcionada(Date dataAdcionada) {
+        this.dataAdcionada = dataAdcionada;
+    }
+
+    public boolean isFavorita() {
+        return isFavorita;
+    }
+
+    public void setFavorita(boolean favorita) {
+        isFavorita = favorita;
     }
 }
