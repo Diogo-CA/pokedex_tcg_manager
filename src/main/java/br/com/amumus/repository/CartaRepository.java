@@ -31,7 +31,7 @@ public class CartaRepository {
         }
     }
 
-    public List<Carta> buscar(String valor, String atributo, Connection connection) throws SQLException {
+    public List<Carta> buscar(String valor, String atributo, int pagina, int tamanhoPagina, Connection connection) throws SQLException {
 
         List<String> colunasPermitidas = List.of("id", "nome", "numero", "colecao", "raridade", "ilustrador");
 
@@ -39,12 +39,16 @@ public class CartaRepository {
             throw new IllegalArgumentException("Erro de segurança: O atributo '" + atributo + "' não é válido para busca.");
         }
 
-        String sql = "SELECT * FROM cartas WHERE " + atributo + " = ?";
+        int offset = (pagina - 1) * tamanhoPagina;
+
+        String sql = "SELECT * FROM cartas WHERE " + atributo + " = ? LIMIT ? OFFSET ?";
 
         List<Carta> cartasEncontradas = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, valor);
+            stmt.setInt(2, tamanhoPagina);
+            stmt.setInt(3, offset);
 
             try (ResultSet rs = stmt.executeQuery()) {
 
@@ -63,5 +67,38 @@ public class CartaRepository {
             }
         }
         return cartasEncontradas;
+    }
+
+    public List<Carta> buscarTodas(int pagina, int tamanhoPagina, Connection connection) throws SQLException {
+
+
+        int offset = (pagina - 1) * tamanhoPagina;
+
+        String sql = "SELECT id, nome, numero, colecao, raridade, ilustrador, imagem FROM cartas LIMIT ? OFFSET ?";
+
+        List<Carta> todasAsCartas = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, tamanhoPagina);
+            stmt.setInt(2, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Carta carta = new Carta();
+                    carta.setId(rs.getString("id"));
+                    carta.setNome(rs.getString("nome"));
+                    carta.setNumeroNaColecao(rs.getString("numero"));
+                    carta.setColecao(rs.getString("colecao"));
+                    carta.setRaridade(rs.getString("raridade"));
+                    carta.setIlustrador(rs.getString("ilustrador"));
+                    carta.setImagem(rs.getString("imagem"));
+
+                    todasAsCartas.add(carta);
+                }
+            }
+        }
+        return todasAsCartas;
     }
 }
