@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Tipografia */
+    --pkdx-font: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    /* Cores da base da pokedéx */
+    --pkdx-red: #E63946; /* Vermelho vibrante principal */
+    --pkdx-red-dark: #A8202A; /* Vermelho escuro para bordas/sombras */
+    --pkdx-red-light: #FF5C6A; /* Destaques de luz */
+
+    /* Lentes e Tela */
+    --pkdx-lens-blue: #00F0FF; /* Lente principal com brilho ciano */
+    --pkdx-lens-blue-glow: rgba(0, 240, 255, 0.6);
+    --pkdx-screen-dark: #12181F; /* Tela desligada/dark mode premium */
+    --pkdx-screen-green: #39FF14; /* Verde neon da tela de status */
+    
+    /* Luzes Superiores */
+    --pkdx-led-red: #FF3B30;
+    --pkdx-led-yellow: #FFCC00;
+    --pkdx-led-green: #34C759;
+
+    /* Detalhes e Botões */
+    --pkdx-yellow: #FFD700;
+    --pkdx-dark: #1F2421;
+    --pkdx-dark-light: #2D3531;
+    --pkdx-light: #F8F9FA;
+    
+    /* Efeitos de Glassmorphism (Painel de Dashboard) */
+    --glass-bg: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
+
+    /* Cores para Tipos de Pokémon TCG */
+    --tcg-grass: #78C850;
+    --tcg-fire: #F08030;
+    --tcg-water: #6890F0;
+    --tcg-lightning: #F8D030;
+    --tcg-psychic: #F85888;
+    --tcg-fighting: #C03028;
+    --tcg-darkness: #705848;
+    --tcg-metal: #B8B8D0;
+    --tcg-dragon: #7038F8;
+    --tcg-colorless: #A8A878;
+    --tcg-fairy: #EE99AC;
+    
+    /* Medidas */
+    --border-radius-padrao: 16px;
+    --transition-suave: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
