@@ -12,6 +12,7 @@ public class CartaColecao {
     private int quantidade;
     private boolean isFoil;
     private CondicaoEnum condicao;
+    private Binder binder;
 
     public CartaColecao() {
     }
@@ -70,5 +71,13 @@ public class CartaColecao {
 
     public void setDono(Usuario dono) {
         this.dono = dono;
+    }
+
+    public Binder getBinder() {
+        return binder;
+    }
+
+    public void setBinder(Binder binder) {
+        this.binder = binder;
     }
 }
