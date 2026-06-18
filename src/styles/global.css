@@ -583,3 +583,250 @@ body {
     text-align: right;
     font-weight: 600;
 }
+
+/* --- ESTILOS ADICIONADOS PARA A MODERNIZAÇÃO VISUAL --- */
+
+/* Abas de Coleção/Wishlist/Binders */
+.collection-header-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 20px;
+}
+.collection-header-tabs .tab-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 10px 20px;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: var(--transition-suave);
+    cursor: pointer;
+}
+.collection-header-tabs .tab-btn:hover {
+    color: white;
+}
+.collection-header-tabs .tab-btn.active {
+    color: var(--pkdx-lens-blue);
+    border-bottom-color: var(--pkdx-lens-blue);
+}
+
+/* Layout de Colunas do Catálogo (Filtros Sidebar) */
+.catalog-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+}
+@media (max-width: 900px) {
+    .catalog-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Filtros de Tipos (Tags Redondas Clicáveis) */
+.type-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.type-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    color: rgba(255,255,255,0.5);
+    transition: var(--transition-suave);
+    user-select: none;
+}
+.type-filter-pill:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.2);
+}
+.type-filter-pill.active {
+    color: white;
+    border-color: transparent;
+}
+/* Mapeamento das classes ativas de tipo */
+.type-filter-pill.active.grass { background-color: var(--tcg-grass); }
+.type-filter-pill.active.fire { background-color: var(--tcg-fire); }
+.type-filter-pill.active.water { background-color: var(--tcg-water); }
+.type-filter-pill.active.lightning { background-color: var(--tcg-lightning); color: #000; }
+.type-filter-pill.active.psychic { background-color: var(--tcg-psychic); }
+.type-filter-pill.active.fighting { background-color: var(--tcg-fighting); }
+.type-filter-pill.active.darkness { background-color: var(--tcg-darkness); }
+.type-filter-pill.active.metal { background-color: var(--tcg-metal); color: #000; }
+.type-filter-pill.active.dragon { background-color: var(--tcg-dragon); }
+.type-filter-pill.active.colorless { background-color: var(--tcg-colorless); color: #000; }
+.type-filter-pill.active.fairy { background-color: var(--tcg-fairy); }
+
+/* Overlays para Cards */
+.card-overlay-indicator {
+    position: absolute;
+    z-index: 5;
+}
+.card-overlay-indicator.check-qty {
+    top: 8px;
+    left: 8px;
+    background: rgba(52, 199, 89, 0.95);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+.card-overlay-btn {
+    position: absolute;
+    z-index: 5;
+    border: none;
+    background: rgba(0, 0, 0, 0.65);
+    color: rgba(255, 255, 255, 0.7);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-suave);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.8rem;
+}
+.card-overlay-btn:hover {
+    background: rgba(0, 0, 0, 0.85);
+    transform: scale(1.15);
+    color: white;
+}
+.card-overlay-btn.favorite-btn {
+    top: 8px;
+    right: 8px;
+}
+.card-overlay-btn.favorite-btn.active {
+    color: #FFD700;
+    background: rgba(0, 0, 0, 0.75);
+    border-color: rgba(255, 215, 0, 0.4);
+}
+.card-overlay-btn.wishlist-btn {
+    bottom: 8px;
+    right: 8px;
+}
+.card-overlay-btn.wishlist-btn.active {
+    color: #E63946;
+    background: rgba(0, 0, 0, 0.75);
+    border-color: rgba(230, 57, 70, 0.4);
+}
+
+/* Badges de prioridade na Wishlist */
+.wishlist-priority-high { background-color: rgba(230, 57, 70, 0.15); color: #FF4D4D; border: 1px solid rgba(230, 57, 70, 0.3); }
+.wishlist-priority-medium { background-color: rgba(255, 204, 0, 0.1); color: #FFCC00; border: 1px solid rgba(255, 204, 0, 0.2); }
+.wishlist-priority-low { background-color: rgba(52, 199, 89, 0.1); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.2); }
+
+/* Overlapping thumbnails para pastas (Dashboard/Lista) */
+.binder-thumbnails {
+    display: flex;
+    margin-bottom: 12px;
+    padding-left: 5px;
+}
+.binder-thumbnail-img {
+    width: 38px;
+    height: 52px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+    margin-left: -8px;
+    transition: transform 0.25s ease, z-index 0.25s ease;
+    cursor: pointer;
+}
+.binder-thumbnail-img:first-child {
+    margin-left: 0;
+}
+.binder-thumbnail-img:hover {
+    transform: translateY(-8px) rotate(-3deg) scale(1.15);
+    z-index: 10;
+}
+
+/* Binder Grade 3x3 (Sheet) */
+.binder-sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 24px;
+    box-shadow: inset 0 4px 20px rgba(0,0,0,0.5);
+}
+.binder-slot {
+    aspect-ratio: 2.5 / 3.5;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.01);
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.15);
+    font-size: 1.8rem;
+    font-weight: 800;
+    position: relative;
+    transition: var(--transition-suave);
+    cursor: pointer;
+    overflow: visible;
+}
+.binder-slot:hover {
+    background: rgba(0, 240, 255, 0.04);
+    border-color: rgba(0, 240, 255, 0.35);
+    color: var(--pkdx-lens-blue);
+}
+.binder-slot.filled {
+    border: none;
+    background: none;
+    overflow: visible;
+}
+.binder-slot .slot-number {
+    position: absolute;
+    font-size: 1.8rem;
+    opacity: 0.12;
+    z-index: 1;
+}
+.binder-slot .pokemon-card {
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+.binder-slot-remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #E63946;
+    border: 2px solid #12181F;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 15;
+    font-size: 0.7rem;
+}
+.binder-slot:hover .binder-slot-remove {
+    opacity: 1;
+}
+.binder-slot-remove:hover {
+    transform: scale(1.15);
+    background: #ff4d4d;
+}

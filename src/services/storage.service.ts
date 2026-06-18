@@ -3,14 +3,18 @@ import type { User } from '../models/user.model.js';
 import type { CollectionItem } from '../models/collection.model.js';
 import type { Folder } from '../models/folder.model.js';
 import type { Transaction } from '../models/transaction.model.js';
+import type { WishlistItem } from '../models/wishlist.model.js';
 
 export class StorageService {
     private static KEYS = {
         USERS: 'pkdx_users',
         COLLECTION: 'pkdx_collection_',
         FOLDERS: 'pkdx_folders_',
-        TRANSACTIONS: 'pkdx_transactions_'
+        TRANSACTIONS: 'pkdx_transactions_',
+        FAVORITES: 'pkdx_favorites_',
+        WISHLIST: 'pkdx_wishlist_'
     };
+
 
     constructor() {
         this.initSeeds();
@@ -53,10 +57,12 @@ export class StorageService {
         users = users.filter(u => u.id !== userId);
         this.saveUsers(users);
 
-        // Limpa coleções, pastas e transações do usuário
+        // Limpa coleções, pastas, transações, favoritos e wishlist do usuário
         localStorage.removeItem(`${StorageService.KEYS.COLLECTION}${userId}`);
         localStorage.removeItem(`${StorageService.KEYS.FOLDERS}${userId}`);
         localStorage.removeItem(`${StorageService.KEYS.TRANSACTIONS}${userId}`);
+        localStorage.removeItem(`${StorageService.KEYS.FAVORITES}${userId}`);
+        localStorage.removeItem(`${StorageService.KEYS.WISHLIST}${userId}`);
     }
 
     // --- CRUD da Coleção de Cartas ---
@@ -223,6 +229,75 @@ export class StorageService {
         this.saveTransactions(userId, []);
     }
 
+    // --- CRUD de Favoritos ---
+    public getFavorites(userId: string): string[] {
+        return this.get<string[]>(`${StorageService.KEYS.FAVORITES}${userId}`, []);
+    }
+
+    public saveFavorites(userId: string, favorites: string[]): void {
+        this.set(`${StorageService.KEYS.FAVORITES}${userId}`, favorites);
+    }
+
+    public isFavorite(userId: string, cardId: string): boolean {
+        return this.getFavorites(userId).includes(cardId);
+    }
+
+    public toggleFavorite(userId: string, cardId: string): boolean {
+        let favorites = this.getFavorites(userId);
+        const exists = favorites.includes(cardId);
+        if (exists) {
+            favorites = favorites.filter(id => id !== cardId);
+        } else {
+            favorites.push(cardId);
+        }
+        this.saveFavorites(userId, favorites);
+        return !exists;
+    }
+
+    // --- CRUD da Lista de Desejos (Wishlist) ---
+    public getWishlist(userId: string): WishlistItem[] {
+        return this.get<WishlistItem[]>(`${StorageService.KEYS.WISHLIST}${userId}`, []);
+    }
+
+    public saveWishlist(userId: string, items: WishlistItem[]): void {
+        this.set(`${StorageService.KEYS.WISHLIST}${userId}`, items);
+    }
+
+    public addWishlistItem(userId: string, item: WishlistItem): void {
+        const items = this.getWishlist(userId);
+        const existsIndex = items.findIndex(i => i.cardId === item.cardId);
+        
+        if (existsIndex > -1) {
+            const existing = items[existsIndex];
+            if (existing) {
+                existing.quantity += item.quantity;
+                existing.priority = item.priority;
+            }
+        } else {
+            items.push(item);
+        }
+        this.saveWishlist(userId, items);
+    }
+
+    public updateWishlistItem(userId: string, itemId: string, quantity: number, priority: 'high' | 'medium' | 'low'): void {
+        const items = this.getWishlist(userId);
+        const itemIndex = items.findIndex(i => i.id === itemId);
+        if (itemIndex > -1) {
+            const item = items[itemIndex];
+            if (item) {
+                item.quantity = quantity;
+                item.priority = priority;
+                this.saveWishlist(userId, items);
+            }
+        }
+    }
+
+    public deleteWishlistItem(userId: string, itemId: string): void {
+        const items = this.getWishlist(userId);
+        const filtered = items.filter(i => i.id !== itemId);
+        this.saveWishlist(userId, filtered);
+    }
+
     // --- Inicialização de Sementes de Testes (Seeds) ---
     private initSeeds(): void {
         const users = this.getUsers();
@@ -380,6 +455,58 @@ export class StorageService {
                 }
             ];
             this.saveTransactions(userId, initialTransactions);
+
+            // Favoritos iniciais
+            this.saveFavorites(userId, ['swsh1-120', 'swsh1-1']);
+
+            // Wishlist inicial
+            const initialWishlist: WishlistItem[] = [
+                {
+                    id: 'wish_1',
+                    userId,
+                    cardId: 'xy1-46',
+                    cardData: {
+                        id: 'xy1-46',
+                        name: 'Charizard-EX',
+                        supertype: 'Pokémon',
+                        subtypes: ['Basic', 'EX'],
+                        types: ['Fire'],
+                        images: {
+                            small: 'https://images.pokemontcg.io/xy1/46.png',
+                            large: 'https://images.pokemontcg.io/xy1/46_hires.png'
+                        },
+                        rarity: 'Rare Holo EX',
+                        number: '46',
+                        artist: 'Eske Yoshinob'
+                    },
+                    quantity: 1,
+                    priority: 'high',
+                    dateAdded: new Date().toISOString()
+                },
+                {
+                    id: 'wish_2',
+                    userId,
+                    cardId: 'swsh1-22',
+                    cardData: {
+                        id: 'swsh1-22',
+                        name: 'Victini V',
+                        supertype: 'Pokémon',
+                        subtypes: ['Basic', 'V'],
+                        types: ['Fire'],
+                        images: {
+                            small: 'https://images.pokemontcg.io/swsh1/22.png',
+                            large: 'https://images.pokemontcg.io/swsh1/22_hires.png'
+                        },
+                        rarity: 'Rare Holo V',
+                        number: '22',
+                        artist: 'Planeta Mochizuki'
+                    },
+                    quantity: 2,
+                    priority: 'medium',
+                    dateAdded: new Date().toISOString()
+                }
+            ];
+            this.saveWishlist(userId, initialWishlist);
         }
     }
 }

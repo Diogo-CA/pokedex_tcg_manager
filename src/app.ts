@@ -140,21 +140,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             case '#/collection':
                 if (dashboardContent) {
-                    const collectionPage = new CollectionPage(storage, auth);
+                    const collectionPage = new CollectionPage(storage, auth, 'collection');
                     dashboardContent.innerHTML = collectionPage.getTemplate();
                     collectionPage.init();
                     currentPage = collectionPage;
-                    updateMiniScreen('MODO: BINDER');
+                    updateMiniScreen('MODO: ACERVO');
                 }
                 break;
 
             case '#/folders':
                 if (dashboardContent) {
-                    const foldersPage = new FoldersPage(storage, auth);
-                    dashboardContent.innerHTML = foldersPage.getTemplate();
-                    foldersPage.init();
-                    currentPage = foldersPage;
-                    updateMiniScreen('MODO: PASTAS');
+                    const collectionPage = new CollectionPage(storage, auth, 'binders');
+                    dashboardContent.innerHTML = collectionPage.getTemplate();
+                    collectionPage.init();
+                    currentPage = collectionPage;
+                    updateMiniScreen('MODO: BINDERS');
                 }
                 break;
 

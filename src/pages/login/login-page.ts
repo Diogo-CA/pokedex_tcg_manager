@@ -141,7 +141,6 @@ export class LoginPage extends Page {
         const email = emailInput.value.trim();
         const password = passwordInput.value;
 
-        // Validação básica
         if (!this.isValidEmail(email)) {
             this.showFeedback('Formato de e-mail inválido.', 'danger');
             this.flashLEDs('red');
@@ -180,7 +179,6 @@ export class LoginPage extends Page {
         const password = passwordInput.value;
         const confirm = confirmInput.value;
 
-        // Validações em formulário (Exigência do trabalho)
         if (name.length < 2) {
             this.showFeedback('Nome deve ter pelo menos 2 caracteres.', 'danger');
             this.flashLEDs('red');
