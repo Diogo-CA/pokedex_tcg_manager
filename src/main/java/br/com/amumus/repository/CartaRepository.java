@@ -1,7 +1,7 @@
 package br.com.amumus.repository;
 
-import br.com.amumus.config.Conexao;
 import br.com.amumus.model.Carta;
+import br.com.amumus.utils.CartaMapper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +31,21 @@ public class CartaRepository {
         }
     }
 
+    public Carta buscarPorId(String idCarta, Connection connection) throws SQLException {
+        String sql = "SELECT * FROM cartas WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, idCarta);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Carta cartaEncontrada = CartaMapper.converterRs(rs);
+                    return cartaEncontrada;
+                }
+            }
+        }
+        return null;
+    }
+
     public List<Carta> buscar(String valor, String atributo, int pagina, int tamanhoPagina, Connection connection) throws SQLException {
 
         List<String> colunasPermitidas = List.of("id", "nome", "numero", "colecao", "raridade", "ilustrador");
@@ -41,27 +56,21 @@ public class CartaRepository {
 
         int offset = (pagina - 1) * tamanhoPagina;
 
-        String sql = "SELECT * FROM cartas WHERE " + atributo + " = ? LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM cartas WHERE " + atributo + " LIKE ? LIMIT ? OFFSET ?";
 
         List<Carta> cartasEncontradas = new ArrayList<>();
 
+        String valorParaBusca = "%" + valor + "%";
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, valor);
+            stmt.setString(1, valorParaBusca);
             stmt.setInt(2, tamanhoPagina);
             stmt.setInt(3, offset);
 
             try (ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Carta carta = new Carta();
-                    carta.setId(rs.getString("id"));
-                    carta.setNome(rs.getString("nome"));
-                    carta.setNumeroNaColecao(rs.getString("numero"));
-                    carta.setColecao(rs.getString("colecao"));
-                    carta.setRaridade(rs.getString("raridade"));
-                    carta.setIlustrador(rs.getString("ilustrador"));
-                    carta.setImagem(rs.getString("imagem"));
-
+                    Carta carta = CartaMapper.converterRs(rs);
                     cartasEncontradas.add(carta);
                 }
             }
@@ -86,15 +95,7 @@ public class CartaRepository {
             try (ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Carta carta = new Carta();
-                    carta.setId(rs.getString("id"));
-                    carta.setNome(rs.getString("nome"));
-                    carta.setNumeroNaColecao(rs.getString("numero"));
-                    carta.setColecao(rs.getString("colecao"));
-                    carta.setRaridade(rs.getString("raridade"));
-                    carta.setIlustrador(rs.getString("ilustrador"));
-                    carta.setImagem(rs.getString("imagem"));
-
+                    Carta carta = CartaMapper.converterRs(rs);
                     todasAsCartas.add(carta);
                 }
             }
