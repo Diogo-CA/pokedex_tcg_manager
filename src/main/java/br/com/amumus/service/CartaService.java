@@ -32,6 +32,7 @@ public class CartaService {
     }
 
     public Carta buscarOuBaixarPorId(String idCarta, Connection connection) throws SQLException {
+
         Carta cartaLocal = cartaRepository.buscarPorId(idCarta, connection);
 
         if (cartaLocal != null) {
@@ -58,6 +59,13 @@ public class CartaService {
 
     public List<Carta> vitriniFiltro(String atributo, String valor) {
 
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new IllegalArgumentException("O termo de busca não pode estar vazio.");
+        }
+        if (atributo == null || atributo.trim().isEmpty()) {
+            throw new IllegalArgumentException("O atributo de filtro não pode estar vazio.");
+        }
+
         List<Carta> vitrine = new ArrayList<>();
 
         try {
@@ -74,7 +82,8 @@ public class CartaService {
 
             if (response.statusCode() == 200) {
 
-                List<CartaResumoDTO> resultadosApi = gson.fromJson(response.body(), new TypeToken<List<CartaResumoDTO>>(){}.getType());
+                List<CartaResumoDTO> resultadosApi = gson.fromJson(response.body(), new TypeToken<List<CartaResumoDTO>>() {
+                }.getType());
 
                 for (CartaResumoDTO dto : resultadosApi) {
                     Carta cartaBasica = new Carta();
@@ -98,6 +107,14 @@ public class CartaService {
     }
 
     public List<Carta> pesquisarCartasNoCatalogo(String atributo, String valor, int pagina, int tamanhoPagina, Connection connection) throws SQLException {
+
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new IllegalArgumentException("O termo de busca não pode estar vazio.");
+        }
+        if (atributo == null || atributo.trim().isEmpty()) {
+            throw new IllegalArgumentException("O atributo de filtro não pode estar vazio.");
+        }
+
         return cartaRepository.buscar(valor, atributo, pagina, tamanhoPagina, connection);
     }
 
