@@ -1,5 +1,6 @@
 package br.com.amumus.controller;
 
+import br.com.amumus.config.Conexao;
 import br.com.amumus.model.Carta;
 import br.com.amumus.service.CartaService;
 import com.google.gson.Gson;
@@ -94,9 +95,15 @@ public class CartaController extends HttpServlet {
         CartaID cartaEscolhida = gson.fromJson(request.getReader(), CartaID.class);
 
         try {
-            if (cartaEscolhida == null) {
+
+            System.out.println("LOG CONTROLLER: Objeto recebido: " + cartaEscolhida);
+            if (cartaEscolhida != null) {
+                System.out.println("LOG CONTROLLER: ID extraído: " + cartaEscolhida.id);
+            }
+
+            if (cartaEscolhida == null || cartaEscolhida.id == null || cartaEscolhida.id.trim().isEmpty()) {
                 response.setStatus(400);
-                out.print("{\"erro\": \"O campo 'id' é obrigatório.\"}");
+                out.print("{\"erro\": \"O campo 'id' é obrigatório no JSON.\"}");
                 return;
             }
 
@@ -106,8 +113,9 @@ public class CartaController extends HttpServlet {
 
                 if (carta != null) {
                     response.setStatus(201);
-                    out.print(gson.toJson(cartaEscolhida));
+                    out.print(gson.toJson(carta));
                 } else {
+                    System.out.println("LOG CONTROLLER: O Service retornou NULL para o ID " + cartaEscolhida.id);
                     response.setStatus(404);
                     out.print("{\"erro\": \"Carta não encontrada.\"}");
                 }
@@ -117,8 +125,45 @@ public class CartaController extends HttpServlet {
             response.setStatus(500);
             out.print("{\"erro\": \"Erro ao tentar baixar e salvar a carta.\"}");
         }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        CartaID cartaDeletada = gson.fromJson(request.getReader(), CartaID.class);
+
+        if (cartaDeletada == null || cartaDeletada.id == null || cartaDeletada.id.trim().isEmpty()) {
+            response.setStatus(400); // Bad Request
+            out.print("{\"erro\": \"O campo 'id' é obrigatório no JSON para deletar.\"}");
+            return;
+        }
+
+        try {
+            try (Connection conn = Conexao.getConexao()) {
+
+                boolean deletada = cartaService.deletarPorID(cartaDeletada.id, conn);
+
+                if (deletada) {
+                    response.setStatus(200);
+                    out.print("carta deletada com sucesso");
+                } else {
+                    response.setStatus(404);
+                    out.print("{\"erro\": \"Carta com ID '" + cartaDeletada.id + "' não encontrada no banco.\"}");
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(500);
+            out.print("{\"erro\": \"Erro interno ao tentar deletar a carta do banco de dados.\"}");
+        }
 
     }
+
 
     private static class CartaID {
         String id;

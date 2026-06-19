@@ -12,7 +12,7 @@ public class CartaMapper {
         Carta carta = new Carta();
         carta.setId(rs.getString("id"));
         carta.setNome(rs.getString("nome"));
-        carta.setNumeroNaColecao(rs.getString("numero"));
+        carta.setNumero_na_colecao(rs.getString("numero_na_colecao"));
         carta.setColecao(rs.getString("colecao"));
         carta.setRaridade(rs.getString("raridade"));
         carta.setIlustrador(rs.getString("ilustrador"));
@@ -25,7 +25,7 @@ public class CartaMapper {
         c.setId(cardDaApi.getId());
         c.setNome(cardDaApi.getName());
 
-        if(cardDaApi.getLocalId() != null) c.setNumeroNaColecao(cardDaApi.getLocalId());
+        if(cardDaApi.getLocalId() != null) c.setNumero_na_colecao(cardDaApi.getLocalId());
         if(cardDaApi.getSet() != null) c.setColecao(cardDaApi.getSet().getName());
         if(cardDaApi.getRarity() != null) c.setRaridade(cardDaApi.getRarity());
         if(cardDaApi.getIllustrator() != null) c.setIlustrador(cardDaApi.getIllustrator());

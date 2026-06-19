@@ -122,6 +122,10 @@ public class CartaService {
         return cartaRepository.buscarTodas(pagina, tamanhoPagina, connection);
     }
 
+    public boolean deletarPorID(String idCarta, Connection connection) throws SQLException {
+        return cartaRepository.deletarId(idCarta, connection);
+    }
+
 
     private static class CartaResumoDTO {
         String id;

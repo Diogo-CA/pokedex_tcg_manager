@@ -14,13 +14,13 @@ public class CartaRepository {
 
     public void salvar(Carta carta, Connection connection) throws SQLException {
 
-        String sql = "INSERT INTO cartas (id_tcgdex, nome, numero, colecao, raridade, ilustrador, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO cartas (id, nome, numero_na_colecao, colecao, raridade, ilustrador, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, carta.getId());
             stmt.setString(2, carta.getNome());
-            stmt.setString(3, carta.getNumeroNaColecao());
+            stmt.setString(3, carta.getNumero_na_colecao());
             stmt.setString(4, carta.getColecao());
             stmt.setString(5, carta.getRaridade());
             stmt.setString(6, carta.getIlustrador());
@@ -48,7 +48,7 @@ public class CartaRepository {
 
     public List<Carta> buscar(String valor, String atributo, int pagina, int tamanhoPagina, Connection connection) throws SQLException {
 
-        List<String> colunasPermitidas = List.of("id", "nome", "numero", "colecao", "raridade", "ilustrador");
+        List<String> colunasPermitidas = List.of("id", "nome", "numero_na_colecao", "colecao", "raridade", "ilustrador");
 
         if (!colunasPermitidas.contains(atributo.toLowerCase())) {
             throw new IllegalArgumentException("Erro de segurança: O atributo '" + atributo + "' não é válido para busca.");
@@ -83,7 +83,7 @@ public class CartaRepository {
 
         int offset = (pagina - 1) * tamanhoPagina;
 
-        String sql = "SELECT id, nome, numero, colecao, raridade, ilustrador, imagem FROM cartas LIMIT ? OFFSET ?";
+        String sql = "SELECT id, nome, numero_na_colecao, colecao, raridade, ilustrador, imagem FROM cartas LIMIT ? OFFSET ?";
 
         List<Carta> todasAsCartas = new ArrayList<>();
 
@@ -101,5 +101,17 @@ public class CartaRepository {
             }
         }
         return todasAsCartas;
+    }
+
+    public boolean deletarId(String idCarta, Connection connection) throws SQLException {
+
+        String sql = "DELETE FROM cartas WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, idCarta);
+            int linhas = stmt.executeUpdate();
+
+            return linhas > 0;
+        }
     }
 }

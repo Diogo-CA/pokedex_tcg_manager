@@ -6,7 +6,7 @@ public class Carta {
     private String nome;
     private String colecao;
     private String raridade;
-    private String numeroNaColecao;
+    private String numero_na_colecao;
     private String ilustrador;
     private String imagem;
 
@@ -18,7 +18,7 @@ public class Carta {
         this.nome = nome;
         this.colecao = colecao;
         this.raridade = raridade;
-        this.numeroNaColecao = numeroNaColecao;
+        this.numero_na_colecao = numeroNaColecao;
         this.ilustrador = ilustrador;
         this.imagem = imagem;
     }
@@ -71,11 +71,11 @@ public class Carta {
         this.imagem = imagem;
     }
 
-    public String getNumeroNaColecao() {
-        return numeroNaColecao;
+    public String getNumero_na_colecao() {
+        return numero_na_colecao;
     }
 
-    public void setNumeroNaColecao(String numeroNaColecao) {
-        this.numeroNaColecao = numeroNaColecao;
+    public void setNumero_na_colecao(String numero_na_colecao) {
+        this.numero_na_colecao = numero_na_colecao;
     }
 }

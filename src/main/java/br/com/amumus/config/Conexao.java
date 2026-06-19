@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Conexao {
-    private static final String URL = "jdbc:mysql://localhost:3306/tcg_manager?useTimezone=true&serverTimezone=UTC";
-    private static final String USUARIO = "root";
-    private static final String SENHA = " ";
+    private static final String URL = "jdbc:mysql://158.23.57.190:3306/db_projeto?useTimezone=true&serverTimezone=UTC";
+    private static final String USUARIO = "devuser";
+    private static final String SENHA = "OvO123@@";
 
     public static Connection getConexao() {
         try {
