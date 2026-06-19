@@ -31,6 +31,26 @@ public class CartaRepository {
         }
     }
 
+    public boolean atualizar(Carta carta, Connection connection) throws SQLException {
+
+        String sql = "UPDATE cartas SET nome = ?, numero_na_colecao = ?, colecao = ?, raridade = ?, ilustrador = ?, imagem = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, carta.getNome());
+            stmt.setString(2, carta.getNumero_na_colecao());
+            stmt.setString(3, carta.getColecao());
+            stmt.setString(4, carta.getRaridade());
+            stmt.setString(5, carta.getIlustrador());
+            stmt.setString(6, carta.getImagem());
+            stmt.setString(7, carta.getId());
+
+            int linhas = stmt.executeUpdate();
+
+            return linhas > 0;
+        }
+    }
+
     public Carta buscarPorId(String idCarta, Connection connection) throws SQLException {
         String sql = "SELECT * FROM cartas WHERE id = ?";
 

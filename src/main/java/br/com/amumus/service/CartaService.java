@@ -118,6 +118,19 @@ public class CartaService {
         return cartaRepository.buscar(valor, atributo, pagina, tamanhoPagina, connection);
     }
 
+    public boolean atualizarCarta(Carta cartaAtualizada, Connection connection) throws SQLException {
+
+        Carta cartaAntiga = cartaRepository.buscarPorId(cartaAtualizada.getId(), connection);
+
+        if (cartaAntiga != null) {
+
+            boolean atualizado = cartaRepository.atualizar(cartaAtualizada, connection);
+            return atualizado;
+        }
+        System.out.println("Carta não atualizada");
+        return false;
+    }
+
     public List<Carta> listarCatalogo(int pagina, int tamanhoPagina, Connection connection) throws SQLException {
         return cartaRepository.buscarTodas(pagina, tamanhoPagina, connection);
     }

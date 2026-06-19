@@ -165,6 +165,44 @@ public class CartaController extends HttpServlet {
     }
 
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        try {
+
+            Carta cartaAtualizada = gson.fromJson(request.getReader(), Carta.class);
+
+            if (cartaAtualizada == null || cartaAtualizada.getId() == null || cartaAtualizada.getId().trim().isEmpty()) {
+                response.setStatus(400);
+                out.print("{\"erro\": \"O 'id' não pode ser nulo.\"}");
+                return;
+            }
+
+            try (Connection conn = br.com.amumus.config.Conexao.getConexao()) {
+
+                boolean atualizado = cartaService.atualizarCarta(cartaAtualizada, conn);
+
+                if (atualizado) {
+                    response.setStatus(200);
+                    out.print("{\"mensagem\": \"Carta atualizada com sucesso no catálogo!\"}");
+                } else {
+                    response.setStatus(404);
+                    out.print("{\"erro\": \"Carta não encontrada para atualização.\"}");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(500);
+            out.print("{\"erro\": \"Erro interno ao processar a atualização da carta.\"}");
+        }
+    }
+
+
     private static class CartaID {
         String id;
     }
