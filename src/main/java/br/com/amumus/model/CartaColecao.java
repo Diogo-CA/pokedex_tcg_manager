@@ -2,7 +2,7 @@ package br.com.amumus.model;
 
 import br.com.amumus.model.ENUMS.CondicaoEnum;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class CartaColecao {
 
@@ -15,13 +15,13 @@ public class CartaColecao {
     private boolean isFoil;
     private CondicaoEnum condicao;
     private Binder binder;
-    private Date dataAdcionada;
+    private LocalDateTime dataAdcionada;
     private boolean isFavorita;
 
     public CartaColecao() {
     }
 
-    public CartaColecao(Usuario dono, Carta cartaBase, int quantidade, boolean isFoil, CondicaoEnum condicao, Date dataAdcionada) {
+    public CartaColecao(Usuario dono, Carta cartaBase, int quantidade, boolean isFoil, CondicaoEnum condicao, LocalDateTime dataAdcionada) {
         this.dono = dono;
         this.cartaBase = cartaBase;
         this.quantidade = quantidade;
@@ -86,11 +86,11 @@ public class CartaColecao {
         this.binder = binder;
     }
 
-    public Date getDataAdcionada() {
+    public LocalDateTime getDataAdcionada() {
         return dataAdcionada;
     }
 
-    public void setDataAdcionada(Date dataAdcionada) {
+    public void setDataAdcionada(LocalDateTime dataAdcionada) {
         this.dataAdcionada = dataAdcionada;
     }
 
