@@ -12,6 +12,7 @@ public class Usuario {
     private Date dataCadastro;
 
     private List<CartaColecao> colecao;
+    private List<Binder> binders;
 
     public Usuario() {
     }
@@ -70,5 +71,13 @@ public class Usuario {
 
     public void setColecao(List<CartaColecao> colecao) {
         this.colecao = colecao;
+    }
+
+    public List<Binder> getBinders() {
+        return binders;
+    }
+
+    public void setBinders(List<Binder> binders) {
+        this.binders = binders;
     }
 }
