@@ -3,6 +3,7 @@ package br.com.amumus.controller;
 import br.com.amumus.config.Conexao;
 import br.com.amumus.model.Carta;
 import br.com.amumus.service.CartaService;
+import br.com.amumus.utils.ControllerUtils;
 import com.google.gson.Gson;
 
 import javax.servlet.annotation.WebServlet;
@@ -24,8 +25,7 @@ public class CartaController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        ControllerUtils.configurarResposta(response);
 
         String path = request.getPathInfo();
 
@@ -77,9 +77,7 @@ public class CartaController extends HttpServlet {
 
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
-                response.setStatus(500);
-                out.print("{\"erro\": \"Erro ao conectar ao banco de dados\"}");
+                ControllerUtils.tratarErro(response, out, e);
             }
         }
         return;
@@ -88,8 +86,7 @@ public class CartaController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        ControllerUtils.configurarResposta(response);
         PrintWriter out = response.getWriter();
 
         CartaID cartaEscolhida = gson.fromJson(request.getReader(), CartaID.class);
@@ -121,17 +118,14 @@ public class CartaController extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            response.setStatus(500);
-            out.print("{\"erro\": \"Erro ao tentar baixar e salvar a carta.\"}");
+            ControllerUtils.tratarErro(response, out, e);
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        ControllerUtils.configurarResposta(response);
         PrintWriter out = response.getWriter();
 
         CartaID cartaDeletada = gson.fromJson(request.getReader(), CartaID.class);
@@ -157,9 +151,7 @@ public class CartaController extends HttpServlet {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            response.setStatus(500);
-            out.print("{\"erro\": \"Erro interno ao tentar deletar a carta do banco de dados.\"}");
+            ControllerUtils.tratarErro(response, out, e);
         }
 
     }
@@ -168,8 +160,7 @@ public class CartaController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        ControllerUtils.configurarResposta(response);
         PrintWriter out = response.getWriter();
 
         try {
@@ -196,12 +187,9 @@ public class CartaController extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            response.setStatus(500);
-            out.print("{\"erro\": \"Erro interno ao processar a atualização da carta.\"}");
+            ControllerUtils.tratarErro(response, out, e);
         }
     }
-
 
     private static class CartaID {
         String id;
