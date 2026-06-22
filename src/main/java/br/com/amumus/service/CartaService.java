@@ -118,6 +118,12 @@ public class CartaService {
 
                 var todasAsCartasDaApi = java.util.Arrays.asList(resultadoCru);
 
+                todasAsCartasDaApi.sort((c1, c2) -> {
+                    String nome1 = c1.getName() != null ? c1.getName() : "";
+                    String nome2 = c2.getName() != null ? c2.getName() : "";
+                    return nome1.compareToIgnoreCase(nome2);
+                });
+
                 int totalCartas = todasAsCartasDaApi.size();
                 int indiceInicial = (pagina - 1) * tamanhoPagina;
                 int indiceFinal = Math.min(indiceInicial + tamanhoPagina, totalCartas);
