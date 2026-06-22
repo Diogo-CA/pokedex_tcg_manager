@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 
-@WebServlet("/colecao/pastas")
+@WebServlet("/colecao/binder")
 public class BinderController extends HttpServlet {
 
     private BinderService binderService;

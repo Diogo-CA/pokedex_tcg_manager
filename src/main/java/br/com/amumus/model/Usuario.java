@@ -1,8 +1,6 @@
 package br.com.amumus.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 public class Usuario {

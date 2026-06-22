@@ -14,7 +14,7 @@ import java.util.List;
 public class CartaColecaoRepository {
 
     public boolean salvar(CartaColecao item, Connection connection) throws SQLException {
-        String sql = "INSERT INTO carta_colecao (carta_base_id, dono_id, binder_id, quantidade, is_foil, condicao, data_adicionada, is_favorita) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO cartas_colecao (carta_base_id, dono_id, binder_id, quantidade, is_foil, condicao, data_adicionada, is_favorita) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -48,7 +48,7 @@ public class CartaColecaoRepository {
     }
 
     public CartaColecao buscarPorId(Long id, Connection connection) throws SQLException {
-        String sql = "SELECT * FROM carta_colecao WHERE id = ?";
+        String sql = "SELECT * FROM cartas_colecao WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -60,7 +60,7 @@ public class CartaColecaoRepository {
 
     public List<CartaColecao> listarInventarioGlobal(Long idUsuario, Connection connection) throws SQLException {
         List<CartaColecao> inventario = new ArrayList<>();
-        String sql = "SELECT * FROM carta_colecao WHERE dono_id = ?";
+        String sql = "SELECT * FROM cartas_colecao WHERE dono_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, idUsuario);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -72,7 +72,7 @@ public class CartaColecaoRepository {
 
     public List<CartaColecao> listarPorBinder(Long idBinder, Connection connection) throws SQLException {
         List<CartaColecao> cartasNaPasta = new ArrayList<>();
-        String sql = "SELECT * FROM carta_colecao WHERE binder_id = ?";
+        String sql = "SELECT * FROM cartas_colecao WHERE binder_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, idBinder);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -84,7 +84,7 @@ public class CartaColecaoRepository {
 
     public boolean atualizar(CartaColecao item, Connection connection) throws SQLException {
 
-        String sql = "UPDATE carta_colecao SET quantidade = ?, is_foil = ?, condicao = ?, is_favorita = ?, binder_id = ? WHERE id = ?";
+        String sql = "UPDATE cartas_colecao SET quantidade = ?, is_foil = ?, condicao = ?, is_favorita = ?, binder_id = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, item.getQuantidade());
@@ -105,7 +105,7 @@ public class CartaColecaoRepository {
     }
 
     public boolean deletar(Long id, Connection connection) throws SQLException {
-        String sql = "DELETE FROM carta_colecao WHERE id = ?";
+        String sql = "DELETE FROM cartas_colecao WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
             return stmt.executeUpdate() > 0;

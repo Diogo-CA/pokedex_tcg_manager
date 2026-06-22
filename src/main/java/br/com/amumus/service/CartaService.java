@@ -3,10 +3,10 @@ package br.com.amumus.service;
 import br.com.amumus.model.Carta;
 import br.com.amumus.repository.CartaRepository;
 import br.com.amumus.utils.CartaMapper;
-import net.tcgdex.sdk.TCGdex;
-import net.tcgdex.sdk.models.Card;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import net.tcgdex.sdk.TCGdex;
+import net.tcgdex.sdk.models.Card;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -103,6 +103,47 @@ public class CartaService {
         } catch (Exception e) {
             System.err.println("Erro de conexão na Vitrine: " + e.getMessage());
         }
+        return vitrine;
+    }
+
+    public List<Carta> listarVitrineCompleta(int pagina, int tamanhoPagina)
+    {
+        List<Carta> vitrine = new ArrayList<>();
+
+        try {
+
+            var resultadoCru = tcgdexApi.fetchCards();
+
+            if (resultadoCru != null && resultadoCru.length > 0) {
+
+                var todasAsCartasDaApi = java.util.Arrays.asList(resultadoCru);
+
+                int totalCartas = todasAsCartasDaApi.size();
+                int indiceInicial = (pagina - 1) * tamanhoPagina;
+                int indiceFinal = Math.min(indiceInicial + tamanhoPagina, totalCartas);
+
+                if (indiceInicial >= totalCartas) {
+                    return vitrine;
+                }
+
+                var paginaAtual = todasAsCartasDaApi.subList(indiceInicial, indiceFinal);
+
+                for (var cardResume : paginaAtual) {
+                    Carta cartaBasica = new Carta();
+                    cartaBasica.setId(cardResume.getId());
+                    cartaBasica.setNome(cardResume.getName());
+
+                    if (cardResume.getImage() != null) {
+                        cartaBasica.setImagem(cardResume.getImage() + "/low.webp");
+                    }
+
+                    vitrine.add(cartaBasica);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao usar o SDK na Vitrine Completa: " + e.getMessage());
+        }
+
         return vitrine;
     }
 
