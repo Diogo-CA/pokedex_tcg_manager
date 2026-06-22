@@ -12,18 +12,18 @@ public class Binder {
     public Binder() {
     }
 
-    public Binder(String nome, long id, Usuario usuario, List<CartaColecao> cartasDoBinder) {
+    public Binder(String nome, Long id, Usuario usuario, List<CartaColecao> cartasDoBinder) {
         this.nome = nome;
         this.id = id;
         this.usuario = usuario;
         this.cartasDoBinder = cartasDoBinder;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
