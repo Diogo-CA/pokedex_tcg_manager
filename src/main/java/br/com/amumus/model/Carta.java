@@ -9,6 +9,7 @@ public class Carta {
     private String numero_na_colecao;
     private String ilustrador;
     private String imagem;
+    private Boolean isWish;
 
     public Carta() {
     }
@@ -21,6 +22,7 @@ public class Carta {
         this.numero_na_colecao = numeroNaColecao;
         this.ilustrador = ilustrador;
         this.imagem = imagem;
+        this.isWish = false;
     }
 
     public String getId() {
@@ -71,11 +73,12 @@ public class Carta {
         this.imagem = imagem;
     }
 
-    public String getNumero_na_colecao() {
-        return numero_na_colecao;
-    }
+    public String getNumero_na_colecao() { return numero_na_colecao; }
 
     public void setNumero_na_colecao(String numero_na_colecao) {
         this.numero_na_colecao = numero_na_colecao;
     }
+
+    public Boolean getIsWish() { return isWish; }
+
 }

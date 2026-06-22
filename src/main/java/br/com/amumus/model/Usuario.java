@@ -1,5 +1,7 @@
 package br.com.amumus.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +11,7 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
-    private Date dataCadastro;
+    private LocalDateTime dataCadastro;
 
     private List<CartaColecao> colecao;
     private List<Binder> binders;
@@ -17,7 +19,7 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(Long id, Date dataCadastro, String senha, String email, String nome) {
+    public Usuario(Long id, LocalDateTime dataCadastro, String senha, String email, String nome) {
         this.id = id;
         this.dataCadastro = dataCadastro;
         this.senha = senha;
@@ -33,11 +35,11 @@ public class Usuario {
         this.id = id;
     }
 
-    public Date getDataCadastro() {
+    public LocalDateTime getDataCadastro() {
         return dataCadastro;
     }
 
-    public void setDataCadastro(Date dataCadastro) {
+    public void setDataCadastro(LocalDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 

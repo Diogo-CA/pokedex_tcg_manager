@@ -7,16 +7,16 @@ public class WishList {
     private Long id;
     private Usuario usuario;
     private Carta cartaDesejada;
-    private boolean isfoilDesejada;
+    private boolean foiDesejada;
     private CondicaoEnum condicaoDesejada;
 
     public WishList() {
     }
 
-    public WishList(Long id, CondicaoEnum condicaoDesejada, boolean isfoilDesejada, Carta cartaDesejada, Usuario usuario) {
+    public WishList(Long id, CondicaoEnum condicaoDesejada, boolean foiDesejada, Carta cartaDesejada, Usuario usuario) {
         this.id = id;
         this.condicaoDesejada = condicaoDesejada;
-        this.isfoilDesejada = isfoilDesejada;
+        this.foiDesejada = foiDesejada;
         this.cartaDesejada = cartaDesejada;
         this.usuario = usuario;
     }
@@ -53,11 +53,9 @@ public class WishList {
         this.condicaoDesejada = condicaoDesejada;
     }
 
-    public boolean isIsfoilDesejada() {
-        return isfoilDesejada;
-    }
+    public boolean isFoilDesejada() { return this.foiDesejada; }
 
-    public void setIsfoilDesejada(boolean isfoilDesejada) {
-        this.isfoilDesejada = isfoilDesejada;
+    public void setFoilDesejada(boolean isfoilDesejada) {
+        this.foiDesejada = isfoilDesejada;
     }
 }
