@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # =========================================================================
+  # SERVIÇO DO BACKEND (API EM JAVA)
+  # =========================================================================
+  backend:
+    build: ./backend
+    container_name: pokemon-backend
+    ports:
+      - "8080:8080" # Liga a porta 8080 da máquina/VM à porta 8080 do container
+    environment:
+      # Variáveis dinâmicas que serão lidas do arquivo .env local ou da VM
+      - DB_URL=${DB_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    restart: unless-stopped
+
+  # =========================================================================
+  # SERVIÇO DO FRONTEND
+  # =========================================================================
+  frontend:
+    build: ./frontend
+    container_name: pokemon-frontend
+    ports:
+      - "80:80" # Liga a porta HTTP padrão (80) da VM à porta 80 do container do site
+    depends_on:
+      - backend
+    restart: unless-stopped

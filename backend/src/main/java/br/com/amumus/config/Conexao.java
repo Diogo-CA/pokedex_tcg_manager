@@ -5,9 +5,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Conexao {
-    private static final String URL = "jdbc:mysql://158.23.57.190:3306/db_projeto?useTimezone=true&serverTimezone=UTC";
-    private static final String USUARIO = "devuser";
-    private static final String SENHA = "OvO123@@";
+    private static final String URL = System.getenv("DB_URL") != null && !System.getenv("DB_URL").trim().isEmpty()
+            ? System.getenv("DB_URL")
+            : "jdbc:mysql://158.23.57.190:3306/db_projeto?useTimezone=true&serverTimezone=UTC";
+    private static final String USUARIO = System.getenv("DB_USER") != null && !System.getenv("DB_USER").trim().isEmpty()
+            ? System.getenv("DB_USER")
+            : "devuser";
+    private static final String SENHA = System.getenv("DB_PASSWORD") != null && !System.getenv("DB_PASSWORD").trim().isEmpty()
+            ? System.getenv("DB_PASSWORD")
+            : "OvO123@@";
 
     public static Connection getConexao() {
         try {

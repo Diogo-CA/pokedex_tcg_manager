@@ -39,3 +39,6 @@ build/
 ### Mac OS ###
 .DS_Store
 Thumbs.db
+
+# Credenciais e Variáveis de Ambiente
+.env
