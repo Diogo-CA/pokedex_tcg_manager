@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 
-@WebServlet("/colecao/desejos")
+@WebServlet("/colecao/wishlist")
 public class WishListController extends HttpServlet {
 
     private WishListService wishListService;
