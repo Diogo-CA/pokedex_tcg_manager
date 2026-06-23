@@ -16,8 +16,8 @@ FROM tomcat:9.0-jre17-temurin
 # Limpa a aplicação padrão do Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
-# Copia o WAR gerado no build e o renomeia para ROOT.war para responder em "/"
-COPY --from=builder /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+# Copia o WAR gerado no build e o renomeia para SIdex.war para responder em "/SIdex"
+COPY --from=builder /app/target/*.war /usr/local/tomcat/webapps/SIdex.war
 
 EXPOSE 8080
 CMD ["catalina.sh", "run"]

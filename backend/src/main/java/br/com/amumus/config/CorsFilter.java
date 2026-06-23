@@ -16,8 +16,9 @@ public class CorsFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        // Autoriza o seu Front-end (ajuste a porta se o seu front estiver rodando em outra)
-        res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        // Autoriza o seu Front-end dinamicamente para aceitar qualquer origem (localhost ou IP da VM)
+        String origin = req.getHeader("Origin");
+        res.setHeader("Access-Control-Allow-Origin", origin != null ? origin : "*");
 
         // Autoriza os métodos que vocês estão usando
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
