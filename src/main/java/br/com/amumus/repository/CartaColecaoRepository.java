@@ -58,25 +58,67 @@ public class CartaColecaoRepository {
         return null;
     }
 
+//    public List<CartaColecao> listarInventarioGlobal(Long idUsuario, Connection connection) throws SQLException {
+//        List<CartaColecao> inventario = new ArrayList<>();
+//        String sql = "SELECT * FROM cartas_colecao WHERE usuario_id = ?";
+//        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//            stmt.setLong(1, idUsuario);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                while (rs.next()) inventario.add(CartaColecaoMapper.converterRS(rs));
+//            }
+//        }
+//        return inventario;
+//    }
+
     public List<CartaColecao> listarInventarioGlobal(Long idUsuario, Connection connection) throws SQLException {
         List<CartaColecao> inventario = new ArrayList<>();
-        String sql = "SELECT * FROM cartas_colecao WHERE usuario_id = ?";
+        String sql = "SELECT cc.*, c.nome, c.imagem, c.raridade, c.colecao FROM cartas_colecao cc INNER JOIN cartas c ON cc.carta_id = c.id WHERE cc.usuario_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, idUsuario);
             try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) inventario.add(CartaColecaoMapper.converterRS(rs));
+                while (rs.next()) {
+                    CartaColecao cc = CartaColecaoMapper.converterRS(rs);
+                    if (cc.getCartaBase() != null) {
+                        cc.getCartaBase().setNome(rs.getString("nome"));
+                        cc.getCartaBase().setImagem(rs.getString("imagem"));
+                        cc.getCartaBase().setRaridade(rs.getString("raridade"));
+                        cc.getCartaBase().setColecao(rs.getString("colecao"));
+                    }
+                    inventario.add(cc);
+                }
             }
         }
         return inventario;
     }
 
+//    public List<CartaColecao> listarPorBinder(Long idBinder, Connection connection) throws SQLException {
+//        List<CartaColecao> cartasNaPasta = new ArrayList<>();
+//        String sql = "SELECT * FROM cartas_colecao WHERE binder_id = ?";
+//        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//            stmt.setLong(1, idBinder);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                while (rs.next()) cartasNaPasta.add(CartaColecaoMapper.converterRS(rs));
+//            }
+//        }
+//        return cartasNaPasta;
+//    }
+
     public List<CartaColecao> listarPorBinder(Long idBinder, Connection connection) throws SQLException {
         List<CartaColecao> cartasNaPasta = new ArrayList<>();
-        String sql = "SELECT * FROM cartas_colecao WHERE binder_id = ?";
+        String sql = "SELECT cc.*, c.nome, c.imagem, c.raridade, c.colecao FROM cartas_colecao cc INNER JOIN cartas c ON cc.carta_id = c.id WHERE cc.binder_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, idBinder);
             try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) cartasNaPasta.add(CartaColecaoMapper.converterRS(rs));
+                while (rs.next()) {
+                    CartaColecao cc = CartaColecaoMapper.converterRS(rs);
+                    if (cc.getCartaBase() != null) {
+                        cc.getCartaBase().setNome(rs.getString("nome"));
+                        cc.getCartaBase().setImagem(rs.getString("imagem"));
+                        cc.getCartaBase().setRaridade(rs.getString("raridade"));
+                        cc.getCartaBase().setColecao(rs.getString("colecao"));
+                    }
+                    cartasNaPasta.add(cc);
+                }
             }
         }
         return cartasNaPasta;
