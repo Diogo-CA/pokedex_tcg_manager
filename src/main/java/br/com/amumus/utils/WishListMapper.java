@@ -26,7 +26,7 @@ public class WishListMapper {
         item.setUsuario(usuario);
 
         Carta carta = new Carta();
-        carta.setId(rs.getString("carta_desejada_id"));
+        carta.setId(rs.getString("carta_id"));
         item.setCartaDesejada(carta);
 
         return item;

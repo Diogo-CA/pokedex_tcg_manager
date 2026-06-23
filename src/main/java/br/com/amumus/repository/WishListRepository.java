@@ -11,7 +11,7 @@ public class WishListRepository {
 
     public boolean salvar(WishList itemDesejo, Connection connection) throws SQLException {
 
-        String sql = "INSERT INTO wishlists (usuario_id, carta_desejada_id, is_foil_desejada, condicao_desejada) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO wishlists (usuario_id, carta_id, is_foil_desejada, condicao_desejada) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 

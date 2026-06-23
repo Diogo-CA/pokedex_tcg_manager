@@ -11,7 +11,7 @@ public class UsuarioRepository {
 
     public boolean salvar(Usuario usuario, Connection connection) throws SQLException {
 
-        String sql = "INSERT INTO usuario (nome, email, senha, data_cadastro) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO usuarios (nome, email, senha, data_cadastro) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -36,7 +36,7 @@ public class UsuarioRepository {
 
     public Usuario buscarPorId(Long id, Connection connection) throws SQLException {
 
-        String sql = "SELECT * FROM usuario WHERE id = ?";
+        String sql = "SELECT * FROM usuarios WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
@@ -53,7 +53,7 @@ public class UsuarioRepository {
 
     public Usuario buscarPorEmail(String email, Connection connection) throws SQLException {
 
-        String sql = "SELECT * FROM usuario WHERE email = ?";
+        String sql = "SELECT * FROM usuarios WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
@@ -71,7 +71,7 @@ public class UsuarioRepository {
     public List<Usuario> listarTodos(Connection connection) throws SQLException {
 
         List<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT * FROM usuario";
+        String sql = "SELECT * FROM usuarios";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -85,7 +85,7 @@ public class UsuarioRepository {
 
     public boolean atualizar(Usuario usuario, Connection connection) throws SQLException {
 
-        String sql = "UPDATE usuario SET nome = ?, email = ?, senha = ? WHERE id = ?";
+        String sql = "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
@@ -100,7 +100,7 @@ public class UsuarioRepository {
 
     public boolean deletar(Long id, Connection connection) throws SQLException {
 
-        String sql = "DELETE FROM usuario WHERE id = ?";
+        String sql = "DELETE FROM usuarios WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
