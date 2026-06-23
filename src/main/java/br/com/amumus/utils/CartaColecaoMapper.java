@@ -30,11 +30,11 @@ public class CartaColecaoMapper {
         }
 
         Carta carta = new Carta();
-        carta.setId(rs.getString("carta_base_id"));
+        carta.setId(rs.getString("carta_id"));
         item.setCartaBase(carta);
 
         Usuario dono = new Usuario();
-        dono.setId(rs.getLong("dono_id"));
+        dono.setId(rs.getLong("usuario_id"));
         item.setDono(dono);
 
         long binderId = rs.getLong("binder_id");

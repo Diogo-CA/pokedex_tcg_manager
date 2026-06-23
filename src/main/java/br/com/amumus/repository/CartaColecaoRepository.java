@@ -14,7 +14,7 @@ import java.util.List;
 public class CartaColecaoRepository {
 
     public boolean salvar(CartaColecao item, Connection connection) throws SQLException {
-        String sql = "INSERT INTO cartas_colecao (carta_base_id, dono_id, binder_id, quantidade, is_foil, condicao, data_adicionada, is_favorita) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO cartas_colecao (carta_id, usuario_id, binder_id, quantidade, is_foil, condicao, data_adicionada, is_favorita) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -60,7 +60,7 @@ public class CartaColecaoRepository {
 
     public List<CartaColecao> listarInventarioGlobal(Long idUsuario, Connection connection) throws SQLException {
         List<CartaColecao> inventario = new ArrayList<>();
-        String sql = "SELECT * FROM cartas_colecao WHERE dono_id = ?";
+        String sql = "SELECT * FROM cartas_colecao WHERE usuario_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, idUsuario);
             try (ResultSet rs = stmt.executeQuery()) {
