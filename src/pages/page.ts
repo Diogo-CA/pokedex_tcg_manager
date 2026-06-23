@@ -1,4 +1,4 @@
-// src/pages/page.ts
+
 
 export abstract class Page {
     /**
@@ -17,6 +17,6 @@ export abstract class Page {
      * Útil para remover event listeners globais, timers, etc.
      */
     public destroy(): void {
-        // Implementação padrão vazia, pode ser sobrescrita pelas classes filhas
+
     }
 }

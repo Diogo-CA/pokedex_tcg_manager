@@ -1,4 +1,4 @@
-// src/pages/login/login-page.ts
+
 import { Page } from '../page.js';
 import { AuthService } from '../../services/auth.service.js';
 
@@ -19,7 +19,7 @@ export class LoginPage extends Page {
         if (this.mode === 'LOGIN') {
             return /*html*/`
                 <div class="animate-fade">
-                    <h5 class="mb-3 text-center scanner-active-title">ACESSO POKÉDEX</h5>
+                    <h5 class="mb-3 text-center scanner-active-title">ACESSO SIDEX</h5>
                     
                     ${this.feedbackMessage ? `
                         <div class="alert alert-${this.feedbackType} py-1 px-2 mb-3 text-center" style="font-size: 0.8rem;">
@@ -36,7 +36,7 @@ export class LoginPage extends Page {
                             <label for="password" class="form-label text-secondary mb-1" style="font-size: 0.75rem;">Senha</label>
                             <input type="password" id="password" class="form-control form-control-sm" placeholder="******" required>
                         </div>
-                        <button type="submit" class="btn pokedex-btn-dark btn-sm w-100 py-2">ENTRAR</button>
+                        <button type="submit" id="btn-login" class="btn pokedex-btn-dark btn-sm w-100 py-2">ENTRAR</button>
                     </form>
                     
                     <div class="text-center mt-3">
@@ -74,7 +74,7 @@ export class LoginPage extends Page {
                             <label for="reg-confirm-password" class="form-label text-secondary mb-1" style="font-size: 0.75rem;">Confirmar Senha</label>
                             <input type="password" id="reg-confirm-password" class="form-control form-control-sm" placeholder="Confirme a senha" required>
                         </div>
-                        <button type="submit" class="btn pokedex-btn-dark btn-sm w-100 py-2">CADASTRAR</button>
+                        <button type="submit" id="btn-register" class="btn pokedex-btn-dark btn-sm w-100 py-2">CADASTRAR</button>
                     </form>
                     
                     <div class="text-center mt-2">
@@ -132,14 +132,15 @@ export class LoginPage extends Page {
         }
     }
 
-    private handleLogin(): void {
+    private async handleLogin(): Promise<void> {
         const emailInput = document.getElementById('email') as HTMLInputElement;
         const passwordInput = document.getElementById('password') as HTMLInputElement;
+        const btnLogin = document.getElementById('btn-login') as HTMLButtonElement;
 
         if (!emailInput || !passwordInput) return;
 
         const email = emailInput.value.trim();
-        const password = passwordInput.value;
+        const senha = passwordInput.value;
 
         if (!this.isValidEmail(email)) {
             this.showFeedback('Formato de e-mail inválido.', 'danger');
@@ -147,39 +148,45 @@ export class LoginPage extends Page {
             return;
         }
 
-        if (password.length === 0) {
+        if (senha.length === 0) {
             this.showFeedback('A senha é obrigatória.', 'danger');
             this.flashLEDs('red');
             return;
         }
 
-        const success = this.authService.login(email, password);
-        if (success) {
+        btnLogin.disabled = true;
+        btnLogin.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+        try {
+            await this.authService.login(email, senha);
             this.flashLEDs('green');
             this.showFeedback('Acesso autorizado! Carregando...', 'success');
             setTimeout(() => {
                 window.location.hash = '#/dashboard';
             }, 800);
-        } else {
+        } catch (error: any) {
+            btnLogin.disabled = false;
+            btnLogin.innerHTML = 'ENTRAR';
             this.flashLEDs('red');
-            this.showFeedback('E-mail ou senha incorretos.', 'danger');
+            this.showFeedback(error.message || 'E-mail ou senha incorretos.', 'danger');
         }
     }
 
-    private handleRegister(): void {
+    private async handleRegister(): Promise<void> {
         const nameInput = document.getElementById('reg-name') as HTMLInputElement;
         const emailInput = document.getElementById('reg-email') as HTMLInputElement;
         const passwordInput = document.getElementById('reg-password') as HTMLInputElement;
         const confirmInput = document.getElementById('reg-confirm-password') as HTMLInputElement;
+        const btnRegister = document.getElementById('btn-register') as HTMLButtonElement;
 
         if (!nameInput || !emailInput || !passwordInput || !confirmInput) return;
 
-        const name = nameInput.value.trim();
+        const nome = nameInput.value.trim();
         const email = emailInput.value.trim();
-        const password = passwordInput.value;
+        const senha = passwordInput.value;
         const confirm = confirmInput.value;
 
-        if (name.length < 2) {
+        if (nome.length < 2) {
             this.showFeedback('Nome deve ter pelo menos 2 caracteres.', 'danger');
             this.flashLEDs('red');
             return;
@@ -191,27 +198,39 @@ export class LoginPage extends Page {
             return;
         }
 
-        if (password.length < 6) {
+        if (senha.length < 6) {
             this.showFeedback('A senha deve ter pelo menos 6 caracteres.', 'danger');
             this.flashLEDs('red');
             return;
         }
 
-        if (password !== confirm) {
+        if (senha !== confirm) {
             this.showFeedback('As senhas não coincidem.', 'danger');
             this.flashLEDs('red');
             return;
         }
 
-        const result = this.authService.register(name, email, password);
-        if (result.success) {
-            this.flashLEDs('yellow');
-            this.mode = 'LOGIN';
-            this.showFeedback(result.message, 'success');
-            this.render();
-        } else {
+        btnRegister.disabled = true;
+        btnRegister.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+        try {
+            const result = await this.authService.register(nome, email, senha);
+            if (result.success) {
+                this.flashLEDs('yellow');
+                this.mode = 'LOGIN';
+                this.showFeedback(result.message, 'success');
+                this.render();
+            } else {
+                btnRegister.disabled = false;
+                btnRegister.innerHTML = 'CADASTRAR';
+                this.flashLEDs('red');
+                this.showFeedback(result.message, 'danger');
+            }
+        } catch (error: any) {
+            btnRegister.disabled = false;
+            btnRegister.innerHTML = 'CADASTRAR';
             this.flashLEDs('red');
-            this.showFeedback(result.message, 'danger');
+            this.showFeedback(error.message || 'Falha ao cadastrar.', 'danger');
         }
     }
 
@@ -233,9 +252,9 @@ export class LoginPage extends Page {
         const led = document.getElementById(`led-${color}`);
         if (led) {
             led.classList.add('blinking');
-            // Remove após 1.5s
+
             setTimeout(() => {
-                // Deixa o vermelho piscando se for tela de login por padrão, desliga outros
+
                 if (color !== 'red') {
                     led.classList.remove('blinking');
                 }

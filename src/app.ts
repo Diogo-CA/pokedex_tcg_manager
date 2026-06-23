@@ -1,27 +1,30 @@
-// src/app.ts
-import { StorageService } from './services/storage.service.js';
+
 import { AuthService } from './services/auth.service.js';
-import { PokemonTcgService } from './services/pokemon.service.js';
+import { CartaService } from './services/carta.service.js';
+import { ColecaoService } from './services/colecao.service.js';
+import { BinderService } from './services/binder.service.js';
+import { WishListService } from './services/wishlist.service.js';
 
 import { Page } from './pages/page.js';
 import { LoginPage } from './pages/login/login-page.js';
 import { DashboardPage } from './pages/dashboard/dashboard-page.js';
 import { CatalogPage } from './pages/catalog/catalog-page.js';
 import { CollectionPage } from './pages/collection/collection-page.js';
-import { FoldersPage } from './pages/folders/folders-page.js';
 import { ProfilePage } from './pages/profile/profile-page.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- 1. Inicialização dos Serviços ---
-    const storage = new StorageService();
-    const auth = new AuthService(storage);
-    const pokemonTcg = new PokemonTcgService();
+    const auth = new AuthService();
+    const cartaService = new CartaService();
+    const colecaoService = new ColecaoService();
+    const binderService = new BinderService();
+    const wishListService = new WishListService();
 
-    // Elementos do DOM principais
     const scene = document.getElementById('pokedex-scene');
     const device = document.getElementById('pokedex-device');
     const lid = document.getElementById('pokedex-lid');
     const pokedexScreen = document.getElementById('pokedex-screen');
+    const mainLayout = document.getElementById('main-layout');
     const dashboardContent = document.getElementById('dashboard-content');
     const miniStatusScreen = document.getElementById('mini-status-screen');
     const btnLogout = document.getElementById('btn-logout');
@@ -31,13 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 2. Lógica de Animação 3D Física da Pokédex ---
     if (lid && device) {
         lid.addEventListener('click', () => {
-            // Se o usuário não está autenticado, abre a Pokedex e exibe o login
+
             if (!auth.isAuthenticated()) {
                 lid.classList.remove('is-closed');
                 device.classList.remove('is-closed');
                 lid.style.cursor = 'default';
-                
-                // Redireciona para login
+
                 window.location.hash = '#/login';
             }
         });
@@ -46,8 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3. Roteador Single Page Application (SPA) ---
     const router = async () => {
         const hash = window.location.hash || '#/login';
-        
-        // Limpa a página anterior se houver
+
         if (currentPage) {
             currentPage.destroy();
             currentPage = null;
@@ -58,31 +59,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const isUserAuthenticated = auth.isAuthenticated();
 
         if (isAuthRoute && !isUserAuthenticated) {
-            // Se tentar acessar área restrita sem login, fecha a Pokedex e manda pro login
-            if (device && lid && scene) {
-                device.classList.add('is-closed');
-                lid.classList.add('is-closed');
-                scene.classList.remove('authenticated');
-                lid.style.cursor = 'pointer';
+            // Se tentar acessar área restrita sem login, mostra a Pokedex e manda pro login
+            if (scene && mainLayout) {
+                scene.style.display = 'flex';
+                mainLayout.style.display = 'none';
+                document.body.style.backgroundImage = "url('../assets/images/kanto_map.jpeg')";
+                
+                if (device && lid) {
+                    device.classList.add('is-closed');
+                    lid.classList.add('is-closed');
+                    lid.style.cursor = 'pointer';
+                }
             }
             window.location.hash = '#/login';
             return;
         }
 
         if (!isAuthRoute && isUserAuthenticated) {
-            // Se logado e tentar ir pro login, manda pro dashboard
+
             window.location.hash = '#/dashboard';
             return;
         }
 
         // --- Gerenciamento Visual de Estado (Layout Duplo ou Simples) ---
         if (isUserAuthenticated) {
-            // Usuário logado: Pokedex à esquerda (Holo Scanner) e Dashboard à direita
-            if (scene && device && lid) {
-                scene.classList.add('authenticated');
-                device.classList.remove('is-closed');
-                lid.classList.remove('is-closed');
-                lid.style.cursor = 'default';
+            // Usuário logado: Esconde a pokedex, mostra layout clean
+            if (scene && mainLayout) {
+                scene.style.display = 'none';
+                mainLayout.style.display = 'flex';
+                document.body.style.backgroundImage = 'none';
+                document.body.style.backgroundColor = '#f6f8fa';
+            }
+
+            const user = auth.getCurrentUser();
+            const navUserName = document.getElementById('nav-user-name');
+            if (navUserName && user) {
+                navUserName.textContent = user.nome || null;
             }
 
             // Garante o Standby do Scanner da Pokédex se a tela estiver com conteúdo obsoleto
@@ -95,12 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            // Atualiza barra de navegação ativa do painel
             updateActiveNavTab(hash);
         } else {
-            // Usuário não logado: Apenas a Pokédex centralizada na tela
-            if (scene && device) {
-                scene.classList.remove('authenticated');
+            // Usuário não logado: Mostra apenas a Pokedex centralizada na tela
+            if (scene && mainLayout) {
+                scene.style.display = 'flex';
+                mainLayout.style.display = 'none';
+                document.body.style.backgroundImage = "linear-gradient(rgba(13, 15, 18, 0.82), rgba(13, 15, 18, 0.82)), url('../assets/images/kanto_map.jpeg')";
             }
         }
 
@@ -120,9 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             case '#/dashboard':
                 if (dashboardContent) {
-                    const dashboardPage = new DashboardPage(storage, auth);
+                    const dashboardPage = new DashboardPage(colecaoService, binderService, wishListService, auth);
                     dashboardContent.innerHTML = dashboardPage.getTemplate();
-                    dashboardPage.init();
+                    await dashboardPage.init();
                     currentPage = dashboardPage;
                     updateMiniScreen('MODO: DASHBOARD');
                 }
@@ -130,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             case '#/catalog':
                 if (dashboardContent) {
-                    const catalogPage = new CatalogPage(pokemonTcg, storage, auth);
+                    const catalogPage = new CatalogPage(cartaService, colecaoService, wishListService, auth);
                     dashboardContent.innerHTML = catalogPage.getTemplate();
                     await catalogPage.init();
                     currentPage = catalogPage;
@@ -140,9 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             case '#/collection':
                 if (dashboardContent) {
-                    const collectionPage = new CollectionPage(storage, auth, 'collection');
+                    const collectionPage = new CollectionPage(colecaoService, binderService, wishListService, auth, 'collection');
                     dashboardContent.innerHTML = collectionPage.getTemplate();
-                    collectionPage.init();
+                    await collectionPage.init();
                     currentPage = collectionPage;
                     updateMiniScreen('MODO: ACERVO');
                 }
@@ -150,9 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             case '#/folders':
                 if (dashboardContent) {
-                    const collectionPage = new CollectionPage(storage, auth, 'binders');
+                    const collectionPage = new CollectionPage(colecaoService, binderService, wishListService, auth, 'binders');
                     dashboardContent.innerHTML = collectionPage.getTemplate();
-                    collectionPage.init();
+                    await collectionPage.init();
                     currentPage = collectionPage;
                     updateMiniScreen('MODO: BINDERS');
                 }
@@ -160,9 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             case '#/profile':
                 if (dashboardContent) {
-                    const profilePage = new ProfilePage(storage, auth);
+                    const profilePage = new ProfilePage(auth);
                     dashboardContent.innerHTML = profilePage.getTemplate();
-                    profilePage.init();
+                    await profilePage.init();
                     currentPage = profilePage;
                     updateMiniScreen('MODO: PERFIL');
                 }
@@ -189,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 lid.style.cursor = 'pointer';
             }
 
-            // Pequeno delay para animação de fechar antes de redefinir rota
             setTimeout(() => {
                 window.location.hash = '#/login';
                 window.location.reload(); // limpa estados residuais
@@ -199,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 5. Inicialização da Sessão Ativa ao atualizar a página ---
     if (auth.isAuthenticated()) {
-        // Se já está logado, garante a abertura visual e rotas protegidas
+
         if (device && lid && scene) {
             device.classList.remove('is-closed');
             lid.classList.remove('is-closed');
@@ -207,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
             lid.style.cursor = 'default';
         }
     } else {
-        // Se não logado, garante fechado
+
         if (device && lid) {
             device.classList.add('is-closed');
             lid.classList.add('is-closed');
@@ -215,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Executa rota inicial
     router();
 
     // --- Funções Auxiliares ---

@@ -1,12 +1,12 @@
-// src/models/wishlist.model.ts
-import type { PokemonCardData } from './card.model.js';
 
-export interface WishlistItem {
-    id: string;
-    userId: string;
-    cardId: string;
-    cardData: PokemonCardData;
-    quantity: number;
-    priority: 'high' | 'medium' | 'low';
-    dateAdded: string;
+import type { Usuario } from './usuario.model.js';
+import type { Carta } from './carta.model.js';
+import type { CondicaoEnum } from './colecao.model.js';
+
+export interface WishList {
+    id: number;
+    usuario: Usuario;
+    cartaDesejada: Carta;
+    foilDesejada: boolean;
+    condicaoDesejada: CondicaoEnum;
 }

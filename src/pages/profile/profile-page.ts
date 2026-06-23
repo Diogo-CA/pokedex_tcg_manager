@@ -1,23 +1,20 @@
-// src/pages/profile/profile-page.ts
+
 import { Page } from '../page.js';
-import { StorageService } from '../../services/storage.service.js';
 import { AuthService } from '../../services/auth.service.js';
 
 export class ProfilePage extends Page {
-    private storageService: StorageService;
     private authService: AuthService;
     private feedbackMessage: string = '';
     private feedbackType: 'success' | 'danger' = 'success';
 
-    constructor(storageService: StorageService, authService: AuthService) {
+    constructor(authService: AuthService) {
         super();
-        this.storageService = storageService;
         this.authService = authService;
     }
 
     public getTemplate(): string {
         const user = this.authService.getCurrentUser();
-        const userName = user ? user.name : '';
+        const userNome = user ? user.nome : '';
         const userEmail = user ? user.email : '';
 
         return `
@@ -40,7 +37,7 @@ export class ProfilePage extends Page {
                         
                         <div class="mb-3">
                             <label for="prof-name" class="form-label text-secondary mb-1" style="font-size: 0.75rem;">Nome de Exibição</label>
-                            <input type="text" id="prof-name" class="form-control form-control-sm" value="${userName}" placeholder="Seu nome completo" required>
+                            <input type="text" id="prof-name" class="form-control form-control-sm" value="${userNome}" placeholder="Seu nome completo" required>
                         </div>
                         
                         <div class="border-top border-secondary border-opacity-25 my-3 pt-3">
@@ -57,7 +54,7 @@ export class ProfilePage extends Page {
                             </div>
                         </div>
                         
-                        <button type="submit" class="btn pokedex-btn-dark btn-sm w-100 py-2 mt-3">ATUALIZAR PERFIL</button>
+                        <button type="submit" id="btn-update-profile" class="btn pokedex-btn-dark btn-sm w-100 py-2 mt-3">ATUALIZAR PERFIL</button>
                     </form>
                 </div>
 
@@ -65,7 +62,7 @@ export class ProfilePage extends Page {
                 <div class="glass-card border-danger border-opacity-50">
                     <h5 class="text-danger mb-2" style="font-size: 0.9rem;"><i class="bi bi-exclamation-triangle"></i> Área de Perigo</h5>
                     <p class="text-secondary" style="font-size: 0.8rem;">
-                        Ao excluir a sua conta, toda a sua binder de coleção, suas pastas organizadoras e logs de movimentação de estoque serão permanentemente apagados de forma irreversível.
+                        Ao excluir a sua conta, toda a sua coleção e pastas serão permanentemente apagados de forma irreversível do banco de dados.
                     </p>
                     <button class="btn btn-outline-danger btn-sm w-100 py-2 mt-2" id="btn-delete-account">
                         <i class="bi bi-trash-fill"></i> EXCLUIR MINHA CONTA DO COLECTOR
@@ -83,7 +80,7 @@ export class ProfilePage extends Page {
         }
     }
 
-    public init(): void {
+    public async init(): Promise<void> {
         const user = this.authService.getCurrentUser();
         if (!user) return;
 
@@ -92,109 +89,78 @@ export class ProfilePage extends Page {
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                this.handleProfileUpdate(user.id);
+                this.handleProfileUpdate(user.id, user.email);
             });
         }
 
         // 2. Exclusão de conta
-        const deleteBtn = document.getElementById('btn-delete-account');
+        const deleteBtn = document.getElementById('btn-delete-account') as HTMLButtonElement;
         if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => {
-                this.handleAccountDelete(user.id);
+            deleteBtn.addEventListener('click', async () => {
+                const conf = window.confirm('TEM CERTEZA ABSOLUTA? Esta ação deletará todo o seu progresso, coleção e pastas para sempre.');
+                if (conf) {
+                    deleteBtn.disabled = true;
+                    deleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> DELETANDO...';
+                    try {
+                        await this.authService.deleteUser(user.id);
+                        window.location.hash = '#/login';
+                    } catch (error: any) {
+                        deleteBtn.disabled = false;
+                        deleteBtn.innerHTML = '<i class="bi bi-trash-fill"></i> EXCLUIR MINHA CONTA DO COLECTOR';
+                        this.showFeedback(error.message || 'Erro ao excluir conta', 'danger');
+                    }
+                }
             });
         }
     }
 
-    private handleProfileUpdate(userId: string): void {
+    private async handleProfileUpdate(userId: number, userEmail: string): Promise<void> {
         const nameInput = document.getElementById('prof-name') as HTMLInputElement;
-        const passwordInput = document.getElementById('prof-password') as HTMLInputElement;
-        const confirmInput = document.getElementById('prof-confirm-password') as HTMLInputElement;
+        const passInput = document.getElementById('prof-password') as HTMLInputElement;
+        const confInput = document.getElementById('prof-confirm-password') as HTMLInputElement;
+        const btnUpdate = document.getElementById('btn-update-profile') as HTMLButtonElement;
 
-        if (!nameInput) return;
+        const newName = nameInput.value.trim();
+        const newPass = passInput.value;
+        const confPass = confInput.value;
 
-        const name = nameInput.value.trim();
-        const password = passwordInput ? passwordInput.value : '';
-        const confirm = confirmInput ? confirmInput.value : '';
-
-        // Validações
-        if (name.length < 2) {
-            this.showFeedback('Nome deve ter pelo menos 2 caracteres.', 'danger');
-            this.flashLEDs('red');
+        if (!newName) {
+            this.showFeedback('O nome não pode estar vazio.', 'danger');
             return;
         }
 
-        const users = this.storageService.getUsers();
-        const fullUser = users.find(u => u.id === userId);
-        if (!fullUser) return;
-
-        // Se preencheu senha, valida
-        if (password.length > 0) {
-            if (password.length < 6) {
+        if (newPass) {
+            if (newPass.length < 6) {
                 this.showFeedback('A nova senha deve ter pelo menos 6 caracteres.', 'danger');
-                this.flashLEDs('red');
                 return;
             }
-            if (password !== confirm) {
-                this.showFeedback('As novas senhas não coincidem.', 'danger');
-                this.flashLEDs('red');
+            if (newPass !== confPass) {
+                this.showFeedback('As senhas não coincidem.', 'danger');
                 return;
             }
-            // Atualiza senha também
-            fullUser.password = password;
         }
 
-        // Atualiza nome
-        fullUser.name = name;
+        btnUpdate.disabled = true;
+        btnUpdate.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ATUALIZANDO...';
 
-        // Salva
-        this.storageService.updateUser(fullUser);
-        
-        // Atualiza sessão no sessionStorage (mantém dados de sessão sincronizados)
-        sessionStorage.setItem('pkdx_current_session', JSON.stringify({
-            id: fullUser.id,
-            name: fullUser.name,
-            email: fullUser.email
-        }));
-
-        this.flashLEDs('green');
-        this.showFeedback('Perfil atualizado com sucesso!', 'success');
-    }
-
-    private handleAccountDelete(userId: string): void {
-        const msg = 'ATENÇÃO: Você tem certeza absoluta de que deseja EXCLUIR sua conta?\nEsta ação apagará toda sua coleção e pastas de forma definitiva!';
-        if (confirm(msg)) {
-            // Exclui
-            this.storageService.deleteUser(userId);
-            this.authService.logout();
-
-            // Pisca LED vermelho
-            const ledRed = document.getElementById('led-red');
-            if (ledRed) {
-                ledRed.classList.add('blinking');
-                setTimeout(() => ledRed.classList.remove('blinking'), 1500);
-            }
-
-            alert('Sua conta foi excluída com sucesso. Retornando para a tela inicial.');
-            
-            // Retorna ao login
-            window.location.hash = '#/login';
-            window.location.reload(); // Recarrega para fechar a Pokedex e resetar o roteador
+        try {
+            const payload: any = { id: userId, nome: newName, email: userEmail };
+            if (newPass) payload.senha = newPass;
+            await this.authService.updateUser(payload);
+            this.showFeedback('Perfil atualizado com sucesso!', 'success');
+        } catch (error: any) {
+            this.showFeedback(error.message || 'Falha ao atualizar perfil', 'danger');
         }
     }
 
     private showFeedback(message: string, type: 'success' | 'danger'): void {
         this.feedbackMessage = message;
         this.feedbackType = type;
-        this.render();
-    }
+        this.render(); // Re-renderiza para mostrar o feedback
 
-    private flashLEDs(color: 'red' | 'green'): void {
-        const led = document.getElementById(`led-${color}`);
-        if (led) {
-            led.classList.add('blinking');
-            setTimeout(() => {
-                led.classList.remove('blinking');
-            }, 1200);
-        }
+        setTimeout(() => {
+            this.feedbackMessage = '';
+            this.render();
+        }, 4000);
     }
 }

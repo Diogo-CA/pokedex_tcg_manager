@@ -830,3 +830,52 @@ body {
     transform: scale(1.15);
     background: #ff4d4d;
 }
+
+/* --- ESTILOS DO NOVO DESIGN LIMPO --- */
+.clean-card {
+    background: #ffffff;
+    border: 1px solid #e1e4e8;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.clean-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.clean-card-header {
+    font-weight: 600;
+    color: #24292e;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.text-dark {
+    color: #24292e !important;
+}
+.text-muted {
+    color: #6a737d !important;
+}
+.bg-light-gray {
+    background-color: #f6f8fa !important;
+}
+.border-light-gray {
+    border-color: #e1e4e8 !important;
+}
+
+/* Top Navbar Tabs Overrides */
+.top-navbar .nav-link {
+    color: #586069;
+    font-weight: 500;
+    padding: 16px 20px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+.top-navbar .nav-link:hover {
+    color: #24292e;
+}
+.top-navbar .nav-link.active {
+    color: #d73a49;
+    border-bottom-color: #d73a49;
+}
