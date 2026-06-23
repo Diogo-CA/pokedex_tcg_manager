@@ -17,7 +17,7 @@ public class ControllerUtils {
     public static void tratarErro(HttpServletResponse response, PrintWriter out, Exception e) {
         e.printStackTrace();
         response.setStatus(500);
-        out.print("{\"erro\": \"Erro interno no servidor ao processar a pasta.\"}");
+        out.print("{\"erro\": \"Erro interno no servidor.\"}");
     }
 
 

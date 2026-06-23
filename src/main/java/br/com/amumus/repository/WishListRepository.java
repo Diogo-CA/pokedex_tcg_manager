@@ -11,7 +11,7 @@ public class WishListRepository {
 
     public boolean salvar(WishList itemDesejo, Connection connection) throws SQLException {
 
-        String sql = "INSERT INTO wishlist (usuario_id, carta_desejada_id, is_foil_desejada, condicao_desejada) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO wishlists (usuario_id, carta_desejada_id, is_foil_desejada, condicao_desejada) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -36,7 +36,7 @@ public class WishListRepository {
 
     public List<WishList> listarPorUsuario(Long idUsuario, Connection connection) throws SQLException {
         List<WishList> listaDesejos = new ArrayList<>();
-        String sql = "SELECT * FROM wishlist WHERE usuario_id = ?";
+        String sql = "SELECT * FROM wishlists WHERE usuario_id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, idUsuario);
@@ -51,7 +51,7 @@ public class WishListRepository {
     }
 
     public WishList buscarPorId(Long id, Connection connection) throws SQLException {
-        String sql = "SELECT * FROM wishlist WHERE id = ?";
+        String sql = "SELECT * FROM wishlists WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -66,7 +66,7 @@ public class WishListRepository {
     }
 
     public boolean atualizar(WishList itemDesejo, Connection connection) throws SQLException {
-        String sql = "UPDATE wishlist SET is_foil_desejada = ?, condicao_desejada = ? WHERE id = ?";
+        String sql = "UPDATE wishlists SET is_foil_desejada = ?, condicao_desejada = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setBoolean(1, itemDesejo.isFoilDesejada());
@@ -78,7 +78,7 @@ public class WishListRepository {
     }
 
     public boolean deletar(Long id, Connection connection) throws SQLException {
-        String sql = "DELETE FROM wishlist WHERE id = ?";
+        String sql = "DELETE FROM wishlists WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
