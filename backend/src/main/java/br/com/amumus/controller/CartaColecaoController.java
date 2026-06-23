@@ -92,6 +92,30 @@ public class CartaColecaoController extends HttpServlet {
         }
     }
 
+//    @Override
+//    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        ControllerUtils.configurarResposta(response);
+//        PrintWriter out = response.getWriter();
+//
+//        try {
+//            CartaColecao itemAtualizado = gson.fromJson(request.getReader(), CartaColecao.class);
+//
+//            try (Connection conn = Conexao.getConexao()) {
+//                boolean sucesso = colecaoService.atualizarItem(itemAtualizado, conn);
+//
+//                if (sucesso) {
+//                    response.setStatus(200);
+//                    out.print("{\"mensagem\": \"Item da coleção atualizado com sucesso!\"}");
+//                } else {
+//                    response.setStatus(404);
+//                    out.print("{\"erro\": \"Item não encontrado na coleção para atualização.\"}");
+//                }
+//            }
+//        } catch (Exception e) {
+//            ControllerUtils.tratarErro(response, out, e);
+//        }
+//    }
+
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ControllerUtils.configurarResposta(response);
@@ -100,14 +124,20 @@ public class CartaColecaoController extends HttpServlet {
         try {
             CartaColecao itemAtualizado = gson.fromJson(request.getReader(), CartaColecao.class);
 
+            if (itemAtualizado == null || itemAtualizado.getId() == null) {
+                response.setStatus(400); // Bad Request
+                out.print("{\"erro\": \"Dados inválidos ou sem ID para atualização.\"}");
+                return;
+            }
+
             try (Connection conn = Conexao.getConexao()) {
                 boolean sucesso = colecaoService.atualizarItem(itemAtualizado, conn);
 
                 if (sucesso) {
-                    response.setStatus(200);
+                    response.setStatus(200); // OK
                     out.print("{\"mensagem\": \"Item da coleção atualizado com sucesso!\"}");
                 } else {
-                    response.setStatus(404);
+                    response.setStatus(404); // Not Found
                     out.print("{\"erro\": \"Item não encontrado na coleção para atualização.\"}");
                 }
             }
@@ -115,6 +145,8 @@ public class CartaColecaoController extends HttpServlet {
             ControllerUtils.tratarErro(response, out, e);
         }
     }
+
+
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
